@@ -30,4 +30,19 @@ Content-Type: application/json
 {
   "username": "test",
   "password": "123456"
+
+
+## Project Status
+
+This project is a prototype created for learning purposes.
+
+Current state:
+- Backend implemented
+- JWT authentication working
+- MongoDB integration
+
+Future improvements:
+- Frontend integration
+- Role-based access control
+- API documentation
 }

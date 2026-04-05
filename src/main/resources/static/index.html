@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+</head>
+<body>
+
+<h1>Task Manager</h1>
+
+<h2>Create Task</h2>
+<form id="taskForm">
+    <input type="text" id="text" placeholder="Task text" required>
+    <label>
+        <input type="checkbox" id="done"> Done
+    </label>
+    <button type="submit">Create Task</button>
+</form>
+
+<hr>
+
+<h2>All Tasks</h2>
+<button onclick="loadTasks()">Refresh Tasks</button>
+<ul id="taskList"></ul>
+
+<script>
+    const apiUrl = "http://localhost:8080/tasks";
+
+    document.getElementById("taskForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const task = {
+            text: document.getElementById("text").value,
+            done: document.getElementById("done").checked
+        };
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(task)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Created:", data);
+            document.getElementById("taskForm").reset();
+            loadTasks();
+        });
+    });
+
+    function loadTasks() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(tasks => {
+                const taskList = document.getElementById("taskList");
+                taskList.innerHTML = "";
+
+                tasks.forEach(task => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        ID: ${task.taskId} | Text: ${task.text} | Done: ${task.done}
+                        <button onclick="deleteTask(${task.taskId})">Delete</button>
+                    `;
+                    taskList.appendChild(li);
+                });
+            });
+    }
+
+    function deleteTask(id) {
+        fetch(`${apiUrl}/${id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                loadTasks();
+            } else {
+                alert("Task not found");
+            }
+        });
+    }
+
+    loadTasks();
+</script>
+
+</body>
+</html>

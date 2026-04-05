@@ -21,28 +21,21 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    private final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(
-            StandardCharsets.UTF_8
-    ));
 
     public  String generateToken(String username){
         return Jwts.builder().subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
+                .signWith(getSignInKey())
                 .compact();
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        return extractAllClaims(token).getSubject();
     }
+
     private Key getSignInKey() {
-        return key;
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     private Claims extractAllClaims(String token) {

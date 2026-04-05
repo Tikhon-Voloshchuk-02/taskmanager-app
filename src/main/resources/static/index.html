@@ -1,87 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Task Manager</title>
+    <title> Task Manager</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <h1>Task Manager</h1>
 
-<h1>Task Manager</h1>
+    <div class="input-group">
+        <input id="taskInput" placeholder="Введите задачу">
+        <button>Добавить</button>
+    </div>
 
-<h2>Create Task</h2>
-<form id="taskForm">
-    <input type="text" id="text" placeholder="Task text" required>
-    <label>
-        <input type="checkbox" id="done"> Done
-    </label>
-    <button type="submit">Create Task</button>
-</form>
-
-<hr>
-
-<h2>All Tasks</h2>
-<button onclick="loadTasks()">Refresh Tasks</button>
-<ul id="taskList"></ul>
-
-<script>
-    const apiUrl = "http://localhost:8080/tasks";
-
-    document.getElementById("taskForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const task = {
-            text: document.getElementById("text").value,
-            done: document.getElementById("done").checked
-        };
-
-        fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(task)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Created:", data);
-            document.getElementById("taskForm").reset();
-            loadTasks();
-        });
-    });
-
-    function loadTasks() {
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(tasks => {
-                const taskList = document.getElementById("taskList");
-                taskList.innerHTML = "";
-
-                tasks.forEach(task => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `
-                        ID: ${task.taskId} | Text: ${task.text} | Done: ${task.done}
-                        <button onclick="deleteTask(${task.taskId})">Delete</button>
-                    `;
-                    taskList.appendChild(li);
-                });
-            });
-    }
-
-    function deleteTask(id) {
-        fetch(`${apiUrl}/${id}`, {
-            method: "DELETE"
-        })
-        .then(response => {
-            if (response.ok) {
-                loadTasks();
-            } else {
-                alert("Task not found");
-            }
-        });
-    }
-
-    loadTasks();
-</script>
+    <ul id="taskList">
+        <li>Пример задачи</li>
+    </ul>
+</div>
 
 </body>
 </html>

@@ -42,6 +42,11 @@ body {
       margin: 0;
     }
 
+    .done {
+        text-decoration: line-through;
+        color:red;
+    }
+
     li {
       display: flex;
       justify-content: space-between;

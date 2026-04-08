@@ -34,7 +34,9 @@ public class SecurityConfig {
                                 "/",
                                 "/index.html",
                                 "/style.css",
-                                "/script.js",
+                                "/main.js",
+                                "/api.js",
+                                "/ui.js",
                                 "/favicon.ico",
                                 "/auth/**",
                                 "/tasks/**"

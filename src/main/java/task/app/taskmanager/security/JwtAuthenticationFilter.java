@@ -25,7 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal (
+    protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
@@ -37,23 +37,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        try {
+            String jwt = authHeader.substring(7);
+            String username = jwtService.extractUsername(jwt);
 
-        String jwt = authHeader.substring(7);
-        String username = jwtService.extractUsername(jwt);
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        UserDetails userDetails = userDetailsService
-                                    .loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (jwtService.isTokenValid(jwt, userDetails)) {
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+
+                filterChain.doFilter(request, response);
+            }
+        } catch (Exception e) {
+            System.out.println("JWT error: " + e.getMessage());
         }
-
-        filterChain.doFilter(request, response);
     }
 }

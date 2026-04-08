@@ -44,7 +44,7 @@ body {
 
     .done {
         text-decoration: line-through;
-        color:red;
+        color:grey;
     }
 
     li {

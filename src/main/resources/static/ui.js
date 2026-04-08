@@ -2,11 +2,19 @@ export function clearTaskList(taskList) {
     taskList.innerHTML = "";
 }
 
-export function renderTask(task, taskList, onDelete) {
+export function renderTask(task, taskList, onDelete, onToggleDone) {
     const li = document.createElement("li");
 
     const span = document.createElement("span");
     span.innerText = task.text;
+
+    if (task.done) {
+        span.classList.add("done");
+    }
+
+    span.addEventListener("click", () => {
+        onToggleDone(task, span);
+    });
 
     const deleteBtn = document.createElement("button");
     deleteBtn.innerText = "Delete";

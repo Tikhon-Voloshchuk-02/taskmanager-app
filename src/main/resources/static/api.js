@@ -37,6 +37,21 @@ export async function createTask(taskText) {
     return response.json();
 }
 
+export async function updateTask(task) {
+    const response = await fetch(`/tasks/${task.id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(task)
+    });
+    if (!response.ok) {
+        throw new Error("Error while updating task: " + response.status);
+    }
+
+    return response.json();
+}
+
 
 
 
